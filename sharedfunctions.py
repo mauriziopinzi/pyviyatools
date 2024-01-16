@@ -867,17 +867,31 @@ def getapplicationproperties():
 
 # build a date filter for the REST filter
 
-def createdatefilter(days=0,datevar='creationTimeStamp',olderoryounger='older'):
+def createdatefilter(days=0,hours=0,datevar='creationTimeStamp',olderoryounger='older'):
 
-    # what date is the filter based on
-    thedate=dt.today()-td(days=int(days))
+    if (int(hours) > 1):
+        print("hours:" + hours)
+        thedate = dt.today() - td(hours=int(hours))
+    else:
+        print("days:" + days)
+        thedate = dt.today() - td(days=int(days))
+
+
+    print(thedate)
 
     # set the timestamp to be at the end of the day for younger and the begining for older
     if olderoryounger=='older':
-       subset_date=thedate.replace(hour=23, minute=59, second=59, microsecond=999999).strftime("%Y-%m-%dT%H:%M:%S")
-       datefilter="le("+datevar+","+subset_date+")"
+        if (int(hours) > 1):
+            subset_date = thedate.replace(minute=59, second=59, microsecond=999999).strftime("%Y-%m-%dT%H:%M:%S")
+        else:
+            subset_date=thedate.replace(hour=23, minute=59, second=59, microsecond=999999).strftime("%Y-%m-%dT%H:%M:%S")
+        datefilter="le("+datevar+","+subset_date+")"
     else:
-       subset_date=thedate.replace(hour=00, minute=00, second=00, microsecond=999999).strftime("%Y-%m-%dT%H:%M:%S")
-       datefilter="ge("+datevar+","+subset_date+")"
+        if (int(hours) > 1):
+            subset_date=thedate.replace(minute=00, second=00, microsecond=999999).strftime("%Y-%m-%dT%H:%M:%S")
+        else:
+            subset_date=thedate.replace(hour=00, minute=00, second=00, microsecond=999999).strftime("%Y-%m-%dT%H:%M:%S")
+        datefilter="ge("+datevar+","+subset_date+")"
 
+    print(datefilter)
     return datefilter

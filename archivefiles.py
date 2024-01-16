@@ -57,14 +57,17 @@ parser.add_argument("-c","--type", help="Content Type in.",default=None)
 parser.add_argument("-p","--parent", help="ParentURI starts with.",default=None)
 parser.add_argument("-pf","--parentfolder", help="Parent Folder Name.",default=None)
 parser.add_argument("-d","--days", help="List files older than this number of days",default='-1')
+parser.add_argument("-hr","--hours", help="List files older than this number of hours",default='-1')
 parser.add_argument("-m","--modifiedby", help="Last modified id equals",default=None)
 parser.add_argument("-fp","--path", help="Path of directory to store files",default='/tmp')
 parser.add_argument("-x","--delete", help="Delete Files after archiving from Viya",action='store_true')
 parser.add_argument("-xx","--deletenoarch", help="Delete Files without Archiving from Viya",action='store_true')
 parser.add_argument("--debug", action='store_true', help="Debug")
+parser.add_argument("-f","--force", action='store_true', help="Skip prompt")
 
 args = parser.parse_args()
 daysolder=args.days
+hoursolder=args.hours
 modby=args.modifiedby
 nameval=args.name
 puri=args.parent
@@ -73,6 +76,7 @@ dodelete=args.delete
 deletenoarch=args.deletenoarch
 pfolder=args.parentfolder
 debug=args.debug
+force=args.force
 
 binaryTypes=['application/octet-stream','audio','image','video','application/msword','application/gzip','application/java-archive','application/pdf','application/rtf','application/x-tar','application/vnd.ms-excel']
 
@@ -91,24 +95,26 @@ if deletenoarch and not dodelete:
 if dodelete:
 
    if deletenoarch:
-
-      if version  > 2:
-         areyousure=input("The files will be deleted. Do you want to continue? (Y)")
+      if force:
+         print("Forcing")
       else:
-         areyousure=raw_input("The files will be deleted. Do you want to continue? (Y)") 
+         if version  > 2:
+            areyousure=input("The files will be deleted. Do you want to continue? (Y)")
+         else:
+            areyousure=raw_input("The files will be deleted. Do you want to continue? (Y)")
 
-      if areyousure !='Y': 
-         print("NOTE: you chose to not delete or archive.")
-         sys.exit()
+         if areyousure !='Y':
+            print("NOTE: you chose to not delete or archive.")
+            sys.exit()
    else:
       if version  > 2:
          areyousure=input("The files will be archived. Do you also want to delete the files? (Y)")
       else:
-         areyousure=raw_input("The files will be archived. Do you also want to delete the files? (Y))") 
+         areyousure=raw_input("The files will be archived. Do you also want to delete the files? (Y))")
       if areyousure !='Y': dodelete=False
 
 # calculate time period for files
-datefilter=createdatefilter(olderoryounger='older',datevar='creationTimeStamp',days=daysolder)
+datefilter=createdatefilter(olderoryounger='older',datevar='creationTimeStamp',days=daysolder,hours=hoursolder)
 
 # create a list for filter conditions
 filtercond=[]
