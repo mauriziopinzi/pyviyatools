@@ -869,15 +869,13 @@ def getapplicationproperties():
 
 def createdatefilter(days=0,hours=0,datevar='creationTimeStamp',olderoryounger='older'):
 
-    if (int(hours) > 1):
-        print("hours:" + hours)
+    if (int(hours) > 0):
         thedate = dt.today() - td(hours=int(hours))
     else:
-        print("days:" + days)
         thedate = dt.today() - td(days=int(days))
 
 
-    print(thedate)
+
 
     # set the timestamp to be at the end of the day for younger and the begining for older
     if olderoryounger=='older':
@@ -893,5 +891,4 @@ def createdatefilter(days=0,hours=0,datevar='creationTimeStamp',olderoryounger='
             subset_date=thedate.replace(hour=00, minute=00, second=00, microsecond=999999).strftime("%Y-%m-%dT%H:%M:%S")
         datefilter="ge("+datevar+","+subset_date+")"
 
-    print(datefilter)
     return datefilter
