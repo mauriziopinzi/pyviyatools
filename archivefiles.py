@@ -96,7 +96,7 @@ if dodelete:
 
    if deletenoarch:
       if force:
-         print("Forcing")
+         noprompt=0     
       else:
          if version  > 2:
             areyousure=input("The files will be deleted. Do you want to continue? (Y)")
@@ -132,7 +132,7 @@ delimiter = ','
 # process items not in folders
 if puri!=None:
 
-   print("NOTE: processing files with parent uri contains: "+puri) 
+   #print("NOTE: processing files with parent uri contains: "+puri) 
 
    filtercond.append("contains(parentUri,'"+puri+"')")
    completefilter = 'and('+delimiter.join(filtercond)+')'
